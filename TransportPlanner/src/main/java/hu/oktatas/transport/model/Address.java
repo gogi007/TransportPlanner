@@ -3,7 +3,6 @@ package hu.oktatas.transport.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -21,9 +20,6 @@ public class Address {
 	private Double latitude;
 	private Double longtitude;
 
-	@OneToMany
-	private Milestone mileStone; 
-	
 	public Address(Long id, @Size(min = 2, max = 2) String isoCode, String city, String street, String postCode,
 			String houseNumber, Double latitude, Double longtitude) {
 		super();

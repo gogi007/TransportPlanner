@@ -15,7 +15,7 @@ public class Section {
 	@OneToOne
 	private Milestone fromMilestone;
 
-//	@OneToOne
+	@OneToOne
 	private Milestone toMilestone;
 	private int number;
 
