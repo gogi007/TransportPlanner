@@ -20,9 +20,12 @@ public class Address {
 	private Double latitude;
 	private Double longtitude;
 
+	
+	public Address() {		
+	}
+
 	public Address(Long id, @Size(min = 2, max = 2) String isoCode, String city, String street, String postCode,
-			String houseNumber, Double latitude, Double longtitude) {
-		super();
+			String houseNumber, Double latitude, Double longtitude) {		
 		this.id = id;
 		this.isoCode = isoCode;
 		this.city = city;
