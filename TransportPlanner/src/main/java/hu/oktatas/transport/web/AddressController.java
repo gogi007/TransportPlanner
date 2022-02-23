@@ -2,8 +2,10 @@ package hu.oktatas.transport.web;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,22 +29,11 @@ public class AddressController {
 
 	private AddressMapper addressMapper;
 	private AddressService addressService;
-	//private AddressRepository addressRepository;
-
-	@GetMapping("/{id}")
-	public AddressDto getById(@PathVariable long id) {
-		Address address = findByIdOrThrow(id);
-		return addressMapper.addressToDto(address);
-	}
 
 	public AddressController(AddressMapper addressMapper, AddressService addressService) {
 		super();
 		this.addressMapper = addressMapper;
 		this.addressService = addressService;
-	}
-
-	private Address findByIdOrThrow(long id) {
-		return addressService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
 	@PostMapping
@@ -52,7 +42,9 @@ public class AddressController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<AddressDto> modifyAddress(@PathVariable long id, @RequestBody @Valid AddressDto addressDto) {
+	public ResponseEntity<AddressDto> modifyAddress(@PathVariable long id, @RequestBody AddressDto addressDto) {
+		if (addressDto.getId() != id)
+			return ResponseEntity.badRequest().build();
 		addressDto.setId(id);
 		Address updatedAddress = addressService.update(addressMapper.dtoToAddress(addressDto));
 		if (updatedAddress == null) {
@@ -62,23 +54,36 @@ public class AddressController {
 		}
 	}
 
-	@GetMapping
-	public List<AddressDto> getAll(@RequestParam(required = false) Boolean full) {
-
-		List<Address> addresses = addressService.findAll();
-
-		return addressMapper.addressesToDtos(addresses);
-
-	}
-
 	@DeleteMapping("/{id}")
 	public void deleteAddress(@PathVariable long id) {
 		addressService.delete(id);
 	}
-/*
-	@PostMapping("/search")
-	public List<AddressDto> findByExample(@RequestBody AddressDto example) {
-		return addressMapper
-				.addressesToDtos(addressService.findAddressesByExample(addressMapper.dtoToAddress(example)));
-	}*/
+
+	@GetMapping("/{id}")
+	public AddressDto getById(@PathVariable long id) {
+		Address address = findByIdOrThrow(id);
+		return addressMapper.addressToDto(address);
+	}
+
+	private Address findByIdOrThrow(long id) {
+		return addressService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+	}
+
+	@GetMapping
+	public List<AddressDto> getAll() {
+
+		List<Address> addresses = addressService.findAll();
+
+		return addressMapper.AddressesToDtos(addresses);
+
+	}
+
+	@PostMapping(value = "/search")
+	public List<AddressDto> findByExample(@RequestBody AddressDto example, Pageable pageable,
+			final HttpServletResponse response) {
+		Page<Address> page = addressService.findAddressesByExample(example, pageable);
+		response.setHeader("Count", String.valueOf(page.getTotalElements())); // ("Count", page.getTotalElements());
+		return addressMapper.addressesToDtos(page.getContent());
+	}
+
 }
