@@ -28,9 +28,6 @@ public class TransportPlanService {
 	@Autowired
 	private SectionService sectionService;
 
-	// @Autowired
-	// private TransportPlanService transportPlanService;
-
 	@Autowired
 	TransportPlanConfigProperties config;
 
@@ -40,17 +37,13 @@ public class TransportPlanService {
 
 	@Transactional
 	public void delayMilestone(long id, long milestoneId, Long delayInMin) {
-		TransportPlan transportPlan = transportPlanRepository.findById(id).get();
-		Milestone milestone = milestoneRepository.findById(milestoneId).get();
-
-		if (transportPlan == null || milestone == null)
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		TransportPlan transportPlan = transportPlanRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		Milestone milestone = milestoneRepository.findById(milestoneId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 		Section section = sectionService.findByPlanIdMileStoneId(id, milestoneId);
-
-		if (section == null)
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
+		System.out.println("aaaa");
 		milestone.setPlannedTime(milestone.getPlannedTime().plusMinutes(delayInMin));
 
 		milestoneRepository.save(milestone);
@@ -62,7 +55,6 @@ public class TransportPlanService {
 		}
 
 		transportPlan.setPlannedIncome(newPlannedIncomeWithLate(transportPlan, delayInMin));
-		System.out.println(transportPlan.getPlannedIncome()); 
 		transportPlanRepository.save(transportPlan);
 	}
 
@@ -93,8 +85,7 @@ public class TransportPlanService {
 			percent = config.getPercentMins().getPenalty30Min();
 		}
 		;
-		System.out.println(config.getPercentMins().getPenalty30Min());
-		return (100 - percent) / 100;
+		return (100.0 - percent) / 100.0;
 	}
 
 }

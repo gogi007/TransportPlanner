@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import hu.oktatas.transport.model.Milestone;
 import hu.oktatas.transport.model.Section;
@@ -26,8 +28,12 @@ public class SectionService {
 		exampleMilestone.setId(milestoneId);
 		example.setTransportPlan(exampleTransportPlan);
 		example.setFromMilestone(exampleMilestone);
-		example.setToMilestone(exampleMilestone);		
-		return findSectionByExample(example).get(0);
+		example.setToMilestone(exampleMilestone);
+		List<Section> results = findSectionByExample(example);			
+		if (results.isEmpty()) {			
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
+		return results.get(0);
 	}
 
 	public Section findNextService(long transportPlanId, int PlaceInTransportPlan) {
@@ -46,8 +52,7 @@ public class SectionService {
 		Milestone fromMilestone = example.getFromMilestone();
 		Milestone toMilestone = example.getToMilestone();
 		int number = example.getNumber();
-		TransportPlan transportPlan = example.getTransportPlan();
-		System.out.println(transportPlan.getPlannedIncome());
+		TransportPlan transportPlan = example.getTransportPlan();		
 		long fromMilestoneId = fromMilestone.getId();
 		long toMilestoneId = toMilestone.getId();
 		long transportPlanId = transportPlan.getId();

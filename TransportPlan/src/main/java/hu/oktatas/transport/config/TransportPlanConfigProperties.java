@@ -3,7 +3,7 @@ package hu.oktatas.transport.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "transport")
 @Component
 public class TransportPlanConfigProperties {
 
