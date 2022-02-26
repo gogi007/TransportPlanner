@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @ConfigurationProperties
 @Component
-public class TransportPlannerConfigProperties {
+public class TransportPlanConfigProperties {
 
 	private PercentMins percentMins = new PercentMins();
 

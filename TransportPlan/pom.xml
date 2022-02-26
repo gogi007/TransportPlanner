@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>hu.oktatas</groupId>
-	<artifactId>transportplanner</artifactId>
+	<artifactId>transportplan</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TransportPlanner</name>
-	<description>Transport Planner Spring project </description>
+	<name>TransportPlan</name>
+	<description>Transport Plan Spring project </description>
 	<properties>
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import hu.oktatas.transport.config.TransportPlannerConfigProperties;
+import hu.oktatas.transport.config.TransportPlanConfigProperties;
 import hu.oktatas.transport.model.Milestone;
 import hu.oktatas.transport.model.Section;
 import hu.oktatas.transport.model.TransportPlan;
@@ -32,7 +32,7 @@ public class TransportPlanService {
 	// private TransportPlanService transportPlanService;
 
 	@Autowired
-	TransportPlannerConfigProperties config;
+	TransportPlanConfigProperties config;
 
 	public Optional<TransportPlan> findById(long id) {
 		return transportPlanRepository.findById(id);
