@@ -2,16 +2,19 @@ package hu.oktatas.transport.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import hu.oktatas.transport.model.Address;
 import hu.oktatas.transport.model.Milestone;
 import hu.oktatas.transport.model.Section;
 import hu.oktatas.transport.model.TransportPlan;
+import hu.oktatas.transport.model.UserType;
 import hu.oktatas.transport.repository.AddressRepository;
 import hu.oktatas.transport.repository.MilestoneRepository;
 import hu.oktatas.transport.repository.SectionRepository;
@@ -32,6 +35,9 @@ public class TestData {
 	@Autowired
 	TransportPlanRepository transportPlanRepository;
 
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	@EventListener
 	public void appReady(ApplicationReadyEvent event) {
 
@@ -128,7 +134,7 @@ public class TestData {
 			allTransportPlan.add(new TransportPlan((long) 5, 5000));
 
 		}
-
+		transportPlanRepository.saveAll(allTransportPlan);
 		List<Section> allSection = new ArrayList<>();
 		{
 			allSection.add(new Section((long) 1, milestoneRepository.findById((long) 1).get(),
@@ -141,7 +147,7 @@ public class TestData {
 					milestoneRepository.findById((long) 24).get(), 4, allTransportPlan.get(0)));
 		}
 
-		sectionRepository.saveAll(allSection);
+		sectionRepository.saveAllAndFlush(allSection);
 		List<Section> allSection2 = new ArrayList<>();
 		{
 
@@ -155,7 +161,7 @@ public class TestData {
 					milestoneRepository.findById((long) 28).get(), 4, allTransportPlan.get(1)));
 		}
 
-		sectionRepository.saveAll(allSection2);
+		sectionRepository.saveAllAndFlush(allSection2);
 
 		List<Section> allSection3 = new ArrayList<>();
 		{
@@ -206,5 +212,12 @@ public class TestData {
 
 		transportPlanRepository.saveAll(allTransportPlan);
 
+		StaticUsers.users.add(new UserType("addMan", passwordEncoder.encode("pass"), Set.of("AddressManager")));
+		StaticUsers.users.add(new UserType("tranMan", passwordEncoder.encode("pass"), Set.of("TransportManager")));
+		//private List<UserType> users = new ArrayList<>();
+		
+//			users.add(new UserType("addMan", passwordEncoder.encode("pass"), Set.of("AddressManager")));
+//			users.add(new UserType("tranMan", passwordEncoder.encode("pass"), Set.of("TransportManager")));
+//		};
 	}
 }
