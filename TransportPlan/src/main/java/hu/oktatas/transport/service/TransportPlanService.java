@@ -43,7 +43,6 @@ public class TransportPlanService {
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 		Section section = sectionService.findByPlanIdMileStoneId(id, milestoneId);
-		System.out.println("aaaa");
 		milestone.setPlannedTime(milestone.getPlannedTime().plusMinutes(delayInMin));
 
 		milestoneRepository.save(milestone);
