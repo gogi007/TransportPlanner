@@ -30,11 +30,11 @@ public class Milestone {
 	public Milestone() {
 	}
 
-	public Milestone(Long id, /*Optional<Address>*/ Address address, String plannedTime) {
+	public Milestone(Long id, /* Optional<Address> */ Address address, String plannedTime) {
 		this.id = id;
 		this.address = address;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"); 
-		LocalDateTime dateTime = LocalDateTime.parse(plannedTime, formatter);		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		LocalDateTime dateTime = LocalDateTime.parse(plannedTime, formatter);
 		this.plannedTime = dateTime;
 	}
 
@@ -61,4 +61,6 @@ public class Milestone {
 	public void setPlannedTime(LocalDateTime plannedTime) {
 		this.plannedTime = plannedTime;
 	}
+
+
 }

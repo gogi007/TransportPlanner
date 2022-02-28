@@ -20,58 +20,71 @@ public class SectionService {
 	SectionRepository sectionRepository;
 
 	public Section findByPlanIdMileStoneId(long transportPlanId, long milestoneId) {
-		Section example = new  Section();
-		TransportPlan exampleTransportPlan= new TransportPlan();
+		Section example = new Section();
+		TransportPlan exampleTransportPlan = new TransportPlan();
 		exampleTransportPlan.setId(transportPlanId);
-		
+
 		Milestone exampleMilestone = new Milestone();
 		exampleMilestone.setId(milestoneId);
 		example.setTransportPlan(exampleTransportPlan);
 		example.setFromMilestone(exampleMilestone);
 		example.setToMilestone(exampleMilestone);
-		List<Section> results = findSectionByExample(example);			
-		if (results.isEmpty()) {			
+		List<Section> results = findSectionByExample(example);
+		if (results.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 		return results.get(0);
 	}
 
 	public Section findNextService(long transportPlanId, int PlaceInTransportPlan) {
-		Section example = new  Section();
+		Section example = new Section();
 		TransportPlan exampleTransportPlan = new TransportPlan();
 		exampleTransportPlan.setId(transportPlanId);
 		example.setNumber(PlaceInTransportPlan);
 		example.setTransportPlan(exampleTransportPlan);
 		return findSectionByExample(example).get(0);
 	}
-	
-	public List<Section> findSectionByExample(Section example){		
-		long id=0;
+
+	public List<Section> findSectionByExample(Section example) {
+		long id = 0;
 		if (example.getId() != null)
 			id = example.getId();
 		Milestone fromMilestone = example.getFromMilestone();
 		Milestone toMilestone = example.getToMilestone();
 		int number = example.getNumber();
-		TransportPlan transportPlan = example.getTransportPlan();		
-		long fromMilestoneId = fromMilestone.getId();
-		long toMilestoneId = toMilestone.getId();
-		long transportPlanId = transportPlan.getId();
+		TransportPlan transportPlan = example.getTransportPlan();
+		long fromMilestoneId = 0L;
+		if (fromMilestone != null) {
+			fromMilestoneId = fromMilestone.getId();
+		}
 		
+		long toMilestoneId = 0L;
+
+		if (toMilestone != null) {
+			toMilestoneId = toMilestone.getId();
+		}
+		
+		long transportPlanId = 0L;
+		
+		if (transportPlan != null) {
+			transportPlanId = transportPlan.getId();
+		}
+
 		Specification<Section> spec = Specification.where(null);
-		if (id >0)
+		if (id > 0)
 			spec = spec.and(SectionSpecifications.hasId(id));
-		if (number>0)
+		if (number > 0)
 			spec = spec.and(SectionSpecifications.hasNumber(number));
-		if ((fromMilestoneId>0) && (toMilestoneId>0))  
-			spec = spec.and(SectionSpecifications.hasFromMilestoneIdOrToMileStoneId(fromMilestoneId,toMilestoneId));		
-		else if (fromMilestoneId>0)  
+		if ((fromMilestoneId > 0) && (toMilestoneId > 0))
+			spec = spec.and(SectionSpecifications.hasFromMilestoneIdOrToMileStoneId(fromMilestoneId, toMilestoneId));
+		else if (fromMilestoneId > 0)
 			spec = spec.and(SectionSpecifications.hasFromMilestoneId(fromMilestoneId));
-		else if (toMilestoneId>0)		
+		else if (toMilestoneId > 0)
 			spec = spec.and(SectionSpecifications.hasToMileStoneId(toMilestoneId));
-		if (transportPlanId>0)
+		if (transportPlanId > 0)
 			spec = spec.and(SectionSpecifications.hasTransportPlanId(transportPlanId));
 		return sectionRepository.findAll(spec);
-		
+
 	}
-	
+
 }

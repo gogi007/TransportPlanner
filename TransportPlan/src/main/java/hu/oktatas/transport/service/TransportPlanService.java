@@ -47,7 +47,13 @@ public class TransportPlanService {
 
 		milestoneRepository.save(milestone);
 
-		if ((section.getFromMilestone() != null) && (section.getFromMilestone().getId() == milestoneId)) {
+		long milestoneTemp = 0L;
+
+		if (section.getFromMilestone() != null) {
+			milestoneTemp = section.getFromMilestone().getId();
+		}
+
+		if (milestoneTemp == milestoneId) {
 			toMilestonePlannedTimeUpd(delayInMin, section);
 		} else {
 			nextSectionMilestonePlannedTimeSliding(id, delayInMin, section);
@@ -64,7 +70,7 @@ public class TransportPlanService {
 	}
 
 	private void nextSectionMilestonePlannedTimeSliding(long transportPlanId, Long delayInMin, Section LastSection) {
-		Section nextSection = sectionService.findNextService(transportPlanId, LastSection.getNumber());
+		Section nextSection = sectionService.findNextService(transportPlanId, LastSection.getNumber()+1);
 		Milestone nextStartMilestone = milestoneRepository.findById(nextSection.getFromMilestone().getId()).get();
 		nextStartMilestone.setPlannedTime(nextStartMilestone.getPlannedTime().plusMinutes(delayInMin));
 		milestoneRepository.save(nextStartMilestone);
