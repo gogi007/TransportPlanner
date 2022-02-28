@@ -14,6 +14,10 @@ public class UserType {
 		this.role = role;
 	}
 
+	public UserType() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getUsername() {
 		return username;
 	}
